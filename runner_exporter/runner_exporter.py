@@ -6,7 +6,7 @@ from time import sleep
 from logger import get_logger
 
 # Read environment variables
-REFRESH_INTERVAL = os.environ.get("REFRESH_INTERVAL", 20)
+REFRESH_INTERVAL = int(os.environ.get("REFRESH_INTERVAL", 20))
 PRIVATE_GITHUB_TOKEN = os.environ["PRIVATE_GITHUB_TOKEN"]
 OWNER = os.environ["OWNER"]
 
@@ -87,6 +87,8 @@ class runnerExports:
         for label in labels:
             if label["type"] == "custom":
                 agg_labels.append(label["name"])
+
+        agg_labels.sort()
 
         return ",".join(agg_labels)
 
@@ -169,7 +171,9 @@ def main():
 
     while True:
         headers = {"Authorization": f"token {PRIVATE_GITHUB_TOKEN}"}
-        url = f"https://api.github.com/orgs/{OWNER}/actions/runners"
+        baseURL = os.getenv("GITHUB_ENTERPRISE_URL", "https://api.github.com")
+
+        url = f"{baseURL}/orgs/{OWNER}/actions/runners"
         logger.debug(f"Sending the api request for /orgs/{OWNER}/actions/runners")
         result = requests.get(url, headers=headers)
 
