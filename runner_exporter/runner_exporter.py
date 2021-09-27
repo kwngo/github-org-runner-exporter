@@ -171,7 +171,9 @@ def main():
 
     while True:
         headers = {"Authorization": f"token {PRIVATE_GITHUB_TOKEN}"}
-        url = f"https://api.github.com/orgs/{OWNER}/actions/runners"
+        baseURL = os.getenv("GITHUB_ENTERPRISE_URL", "https://api.github.com")
+
+        url = f"{baseURL}/orgs/{OWNER}/actions/runners"
         logger.debug(f"Sending the api request for /orgs/{OWNER}/actions/runners")
         result = requests.get(url, headers=headers)
 
