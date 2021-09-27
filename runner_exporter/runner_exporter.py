@@ -9,6 +9,7 @@ from logger import get_logger
 REFRESH_INTERVAL = int(os.environ.get("REFRESH_INTERVAL", 20))
 PRIVATE_GITHUB_TOKEN = os.environ["PRIVATE_GITHUB_TOKEN"]
 OWNER = os.environ["OWNER"]
+BASE_URL = os.getenv("GITHUB_ENTERPRISE_URL", "https://api.github.com")
 
 logger = get_logger()
 
@@ -171,9 +172,8 @@ def main():
 
     while True:
         headers = {"Authorization": f"token {PRIVATE_GITHUB_TOKEN}"}
-        baseURL = os.getenv("GITHUB_ENTERPRISE_URL", "https://api.github.com")
 
-        url = f"{baseURL}/orgs/{OWNER}/actions/runners"
+        url = f"{BASE_URL}/orgs/{OWNER}/actions/runners"
         logger.debug(f"Sending the api request for /orgs/{OWNER}/actions/runners")
         result = requests.get(url, headers=headers)
 
